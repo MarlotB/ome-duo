@@ -9,11 +9,13 @@ public class Player_Score : MonoBehaviour
 
     private int playerMoney; // money at start
     public Text ScoreText;
-   
+   	public Camera mainCamera;
+   	private Color32 darkBlue;
     
 
     void Start()
     {
+		darkBlue = new Color32(93, 114, 118, 0);
                playerMoney = 1027;
         ScoreText.text = "Geld: €" + playerMoney.ToString();
            }
@@ -27,36 +29,35 @@ public class Player_Score : MonoBehaviour
         }
           }
 
-    void OnTriggerEnter2D(Collider2D trig)
-    {
-        if (trig.gameObject.CompareTag("EndLevel"))
-        {
-            SceneManager.LoadScene("GameOverScene");
-        }
-        if (trig.gameObject.CompareTag("Money"))
-        {
-            trig.gameObject.SetActive(false);
-            playerMoney = playerMoney + 20;
-            ScoreText.text = "Geld: €" + playerMoney.ToString();
-        }
-        if (trig.gameObject.CompareTag("Games"))
-        {
-            trig.gameObject.SetActive(false);
-            playerMoney = playerMoney - 40;
-            ScoreText.text = "Geld: €" + playerMoney.ToString();
-        }
-        if (trig.gameObject.CompareTag("Food"))
-        {
-            trig.gameObject.SetActive(false);
-            playerMoney = playerMoney - 6;
-            ScoreText.text = "Geld: €" + playerMoney.ToString();
-        }
-        if (trig.gameObject.CompareTag("Doctor"))
-        {
-            trig.gameObject.SetActive(false);
-            playerMoney = playerMoney - 100;
-            ScoreText.text = "Geld: €" + playerMoney.ToString();
-        }
+    void OnTriggerEnter2D (Collider2D trig)
+	{
+		if (trig.gameObject.CompareTag ("EndLevel")) {
+			SceneManager.LoadScene ("GameOverScene");
+		}
+		if (trig.gameObject.CompareTag ("Money")) {
+			trig.gameObject.SetActive (false);
+			playerMoney = playerMoney + 20;
+			ScoreText.text = "Geld: €" + playerMoney.ToString ();
+		}
+		if (trig.gameObject.CompareTag ("Games")) {
+			trig.gameObject.SetActive (false);
+			playerMoney = playerMoney - 40;
+			ScoreText.text = "Geld: €" + playerMoney.ToString ();
+		}
+		if (trig.gameObject.CompareTag ("Food")) {
+			trig.gameObject.SetActive (false);
+			playerMoney = playerMoney - 6;
+			ScoreText.text = "Geld: €" + playerMoney.ToString ();
+		}
+		if (trig.gameObject.CompareTag ("Doctor")) {
+			trig.gameObject.SetActive (false);
+			playerMoney = playerMoney - 100;
+			ScoreText.text = "Geld: €" + playerMoney.ToString ();
+		}
+		if (playerMoney < 990) {
+			mainCamera.backgroundColor = darkBlue;
+		}
+
     }
     
 } 
