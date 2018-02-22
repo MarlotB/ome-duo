@@ -11,13 +11,18 @@ public class Player_Score : MonoBehaviour
     public Text ScoreText;
    	public Camera mainCamera;
    	private Color32 darkBlue;
-    
+   	private Color32 lightBlue;
+
+    public float duration = 1.0F;
+    public Renderer rend;
 
     void Start()
     {
 		darkBlue = new Color32(93, 114, 118, 0);
+		lightBlue = new Color32(82, 217, 244, 0);
                playerMoney = 1027;
         ScoreText.text = "Geld: €" + playerMoney.ToString();
+		rend = GetComponent<Renderer>();
            }
 
     // Update is called once per frame
@@ -56,6 +61,8 @@ public class Player_Score : MonoBehaviour
 		}
 		if (playerMoney < 990) {
 			mainCamera.backgroundColor = darkBlue;
+			float lerp = Mathf.PingPong(Time.time, 7) / duration;
+			mainCamera.backgroundColor = Color.Lerp(darkBlue, lightBlue, Mathf.PingPong(Time.time, 1));
 		}
 
     }
