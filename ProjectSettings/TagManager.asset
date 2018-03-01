@@ -11,6 +11,11 @@ TagManager:
   - Food
   - CloudHappy
   - Doctor
+  - Rent
+  - HealthNoPickup
+  - RentNotPickup
+  - Books
+  - Background
   layers:
   - Default
   - TransparentFX

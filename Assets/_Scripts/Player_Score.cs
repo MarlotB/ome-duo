@@ -10,27 +10,51 @@ public class Player_Score : MonoBehaviour
     private int playerMoney; // money at start
     public Text ScoreText;
    	public Camera mainCamera;
-   	private Color32 darkBlue;
-   	private Color32 lightBlue;
+   	public Color32 darkBlue;
+   	public Color32 lightBlue;
+    public GameObject Panel;
+    public Button HealthOK;
+    public GameObject HealthNoPickup;
+    public GameObject Panel2;
+    public Button RentOK;
+    public GameObject RentNoPickup;
+    public AudioClip MoneySoundEffect;
+    public AudioSource MoneySoundEffectSource;
+    public AudioClip FoodSoundEffect;
+    public AudioSource FoodSoundEffectSource;
+    public AudioClip GamesSoundEffect;
+    public AudioSource GamesSoundEffectSource;
+    public AudioClip DoctorSoundEffect;
+    public AudioSource DoctorSoundEffectSource;
+    public AudioClip BooksSoundEffect;
+    public AudioSource BooksSoundEffectSource;
+
 
     public float duration = 1.0F;
     public Renderer rend;
 
-	AudioSource m_MyAudioSource;
-
-    //Play the music
+	   //Play the music
     bool m_Play;
     //Detect when you use the toggle, ensures music isn’t played multiple times
     bool m_ToggleChange;
 
     void Start()
     {
-		darkBlue = new Color32(93, 114, 118, 0);
-		lightBlue = new Color32(82, 217, 244, 0);
+		//darkBlue = new Color32(93, 114, 118, 0);
+		//lightBlue = new Color32(82, 217, 244, 0);
                playerMoney = 1027;
         ScoreText.text = "Geld: €" + playerMoney.ToString();
 		rend = GetComponent<Renderer>();
-           }
+        Panel.gameObject.SetActive(false);
+        HealthOK.gameObject.SetActive(false);
+        Panel2.gameObject.SetActive(false);
+        RentOK.gameObject.SetActive(false);
+        MoneySoundEffectSource.clip = MoneySoundEffect;
+        FoodSoundEffectSource.clip = FoodSoundEffect;
+        GamesSoundEffectSource.clip = GamesSoundEffect;
+        DoctorSoundEffectSource.clip = DoctorSoundEffect;
+        BooksSoundEffectSource.clip = BooksSoundEffect;
+    }
 
     // Update is called once per frame
     void Update()
@@ -40,7 +64,7 @@ public class Player_Score : MonoBehaviour
             SceneManager.LoadScene("GameOverScene"); // loads game over screen
         }
           }
-
+    
     void OnTriggerEnter2D (Collider2D trig)
 	{
 		if (trig.gameObject.CompareTag ("EndLevel")) {
@@ -50,51 +74,87 @@ public class Player_Score : MonoBehaviour
 			trig.gameObject.SetActive (false);
 			playerMoney = playerMoney + 20;
 			ScoreText.text = "Geld: €" + playerMoney.ToString ();
+			MoneySoundEffectSource.Play ();
 		}
 		if (trig.gameObject.CompareTag ("Games")) {
 			trig.gameObject.SetActive (false);
 			playerMoney = playerMoney - 40;
 			ScoreText.text = "Geld: €" + playerMoney.ToString ();
+			GamesSoundEffectSource.Play ();
 
-			//Fetch the AudioSource from the GameObject
-        	m_MyAudioSource = GetComponent<AudioSource>();
-
-			//Check to see if you just set the toggle to positive
-       		if (m_Play == true && m_ToggleChange == true)
-        	{
-            	//Play the audio you attach to the AudioSource component
-            	m_MyAudioSource.Play();
-            	//Ensure audio doesn’t play more than once
-            	m_ToggleChange = false;
-      	  	}
-        	//Check if you just set the toggle to false
-        	if (m_Play == false && m_ToggleChange == true)
-        	{
-            	//Stop the audio
-            	m_MyAudioSource.Stop();
-            	//Ensure audio doesn’t play more than once
-            	m_ToggleChange = false;
-        	}
 		}
 		if (trig.gameObject.CompareTag ("Food")) {
 			trig.gameObject.SetActive (false);
 			playerMoney = playerMoney - 6;
 			ScoreText.text = "Geld: €" + playerMoney.ToString ();
+			FoodSoundEffectSource.Play ();
 		}
 		if (trig.gameObject.CompareTag ("Doctor")) {
 			trig.gameObject.SetActive (false);
-			playerMoney = playerMoney - 100;
+			playerMoney = playerMoney - 83;
+			ScoreText.text = "Geld: €" + playerMoney.ToString ();
+			DoctorSoundEffectSource.Play ();
+		}
+		if (trig.gameObject.CompareTag ("Rent")) {
+			trig.gameObject.SetActive (false);
+			playerMoney = playerMoney - 400;
 			ScoreText.text = "Geld: €" + playerMoney.ToString ();
 		}
-		if (playerMoney < 990) {
-			mainCamera.backgroundColor = darkBlue;
-			float lerp = Mathf.PingPong(Time.time, 7) / duration;
-			mainCamera.backgroundColor = Color.Lerp(darkBlue, lightBlue, Mathf.PingPong(Time.time, 1));
+		if (trig.gameObject.CompareTag ("HealthNoPickup")) {
+			Panel.gameObject.SetActive (true);
+			HealthOK.gameObject.SetActive (true);
+			playerMoney = playerMoney - 110;
+			ScoreText.text = "Geld: €" + playerMoney.ToString ();
 		}
+		if (trig.gameObject.CompareTag ("RentNotPickup")) {
+			Panel2.gameObject.SetActive (true);
+			RentOK.gameObject.SetActive (true);
+			playerMoney = playerMoney - 300;
+			ScoreText.text = "Geld: €" + playerMoney.ToString ();
+		}
+
+		if (!trig.CompareTag ("Background")) {
+        	checkAmountOfMoney(trig);
+		}
+
+        if (trig.gameObject.CompareTag("Books"))
+        {
+            trig.gameObject.SetActive(false);
+            playerMoney = playerMoney - 40;
+            ScoreText.text = "Geld: €" + playerMoney.ToString();
+            BooksSoundEffectSource.Play();
+        }
 
     }
 
-	void OnGUI()
+    public void checkAmountOfMoney (Collider2D trig)
+	{
+		// darkblue color if the amount of money < 990
+		if (playerMoney < 990 && mainCamera.backgroundColor != darkBlue) {
+			StartCoroutine(changeCameraBackgroundColor(lightBlue, darkBlue, 1f));
+		}
+
+		if (playerMoney > 990 && mainCamera.backgroundColor != lightBlue) {
+			StartCoroutine(changeCameraBackgroundColor(darkBlue, lightBlue, 1f));
+		}
+	}
+
+	public IEnumerator changeCameraBackgroundColor(Color32 startColor, Color32 endColor, float duration)
+	{
+		float lerpControl = 0;
+		float timeRemaining = duration;
+	     while (timeRemaining > 0)
+	     {
+	         timeRemaining -= Time.deltaTime;
+			 lerpControl += Time.deltaTime/duration;
+			 mainCamera.backgroundColor = Color.Lerp(startColor, endColor, lerpControl);
+	         yield return null;
+	     }
+		mainCamera.backgroundColor = endColor;
+	}
+    
+
+    void OnGUI()
     {
         //Switch this toggle to activate and deactivate the parent GameObject
         m_Play = GUI.Toggle(new Rect(10, 10, 100, 30), m_Play, "Play Music");

@@ -43,7 +43,7 @@ namespace UnityStandardAssets._2D
             for (int i = 0; i < colliders.Length; i++)
             {
                 if (colliders[i].gameObject != gameObject)
-                    m_Grounded = true;
+                { m_Grounded = true; }
             }
             m_Anim.SetBool("Ground", m_Grounded);
 
@@ -51,7 +51,7 @@ namespace UnityStandardAssets._2D
             m_Anim.SetFloat("vSpeed", m_Rigidbody2D.velocity.y);
 
             if (m_Grounded)
-                m_DoubleJump = false; 
+            { m_DoubleJump = false; }
         }
 
 
@@ -99,28 +99,31 @@ namespace UnityStandardAssets._2D
             if ((m_Grounded || !m_DoubleJump) && jump && (m_Anim.GetBool("Ground") || !m_DoubleJump))
             {
                 // Add a vertical force to the player.
-                m_Grounded = false;
-                m_Anim.SetBool("Ground", false);
+              m_Grounded = false;
+              m_Anim.SetBool("Ground", false);
 
                 m_Rigidbody2D.velocity = new Vector2(m_Rigidbody2D.velocity.x, 0);
 
                 m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
 
-                if (!m_Grounded)
-                    m_DoubleJump = true;
-            }
+                            }
+            if (!m_Grounded)
+            { m_DoubleJump = true; }
+            if (!m_DoubleJump)
+            { m_Grounded = true; }
+
         }
 
 
-        private void Flip()
+     void Flip()
         {
             // Switch the way the player is labelled as facing.
-            m_FacingRight = !m_FacingRight;
+           m_FacingRight = !m_FacingRight;
 
             // Multiply the player's x local scale by -1.
-            Vector3 theScale = transform.localScale;
-            theScale.x *= -1;
-            transform.localScale = theScale;
-        }
+           Vector3 theScale = transform.localScale;
+           theScale.x *= -1;
+           transform.localScale = theScale;
+       }
     }
 }
